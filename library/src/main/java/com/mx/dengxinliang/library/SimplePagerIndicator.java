@@ -170,8 +170,6 @@ public class SimplePagerIndicator extends View implements PagerIndicator, ViewPa
 			float right = left + rectWidth;
 			rect.set((int) left, (int) top, (int) right, (int) bottom);
 			canvas.drawRect(rect, paint);
-
-            currentPositionOffset = 0;
         } else {
 
         }
