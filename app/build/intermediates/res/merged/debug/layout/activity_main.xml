@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              xmlns:app="http://schemas.android.com/apk/res-auto"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent"
-              android:orientation="vertical">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
     <!--
         <android.support.v7.widget.RecyclerView
             android:layout_width="wrap_content"
@@ -13,12 +13,26 @@
     <android.support.v4.view.ViewPager
         android:id="@+id/view_pager"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+        android:layout_height="match_parent" />
 
     <com.mx.dengxinliang.library.SimplePagerIndicator
-        android:id="@+id/indicator"
-        android:layout_width="wrap_content"
+        android:id="@+id/circle_indicator"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        app:preferences_style="rect"
-        android:layout_height="wrap_content"/>
+        app:normal_color="@android:color/holo_green_light"
+        app:preferences_style="circle" />
+
+    <com.mx.dengxinliang.library.SimplePagerIndicator
+        android:id="@+id/rect_indicator"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@id/circle_indicator"
+        app:preferences_style="rect" />
+
+    <com.mx.dengxinliang.library.SimplePagerIndicator
+        android:id="@+id/test_custom_drawer_indicator"
+        android:layout_width="match_parent"
+        android:layout_height="30dp"
+        android:layout_above="@id/rect_indicator" />
 </RelativeLayout><!-- From: file:/C:/Users/dxinl/Desktop/DxlPagerIndicator/app/src/main/res/layout/activity_main.xml -->

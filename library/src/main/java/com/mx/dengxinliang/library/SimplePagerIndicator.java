@@ -22,6 +22,7 @@ public class SimplePagerIndicator extends View implements PagerIndicator, ViewPa
 
     private ViewPager mViewPager;
     private ViewPager.OnPageChangeListener onPageChangeListener;
+    private SimplePagerIndicatorDrawer drawer;
 
     private Paint paint;
     private Rect rect;
@@ -34,7 +35,7 @@ public class SimplePagerIndicator extends View implements PagerIndicator, ViewPa
     private float dividerSize;
     private String preferencesStyle;
 
-    private float currentPositionOffset;
+    private int currentPositionOffset;
     private int currentPosition = 0;
 
     public SimplePagerIndicator(Context context) {
@@ -71,11 +72,11 @@ public class SimplePagerIndicator extends View implements PagerIndicator, ViewPa
                 getResources().getDimension(R.dimen.default_rect_height));
         preferencesStyle = array.getString(R.styleable.SimplePagerIndicator_preferences_style);
         dividerSize = array.getDimension(R.styleable.SimplePagerIndicator_indicator_divider_size,
-                preferencesStyle.equals(RECT_STYLE) ?
+                preferencesStyle != null && preferencesStyle.equals(RECT_STYLE) ?
                         getResources().getDimension(R.dimen.default_rect_divider) : getResources().getDimension(R.dimen.default_circle_divider));
         array.recycle();
 
-        if (!preferencesStyle.equals(CIRCLE_STYLE) && !preferencesStyle.equals(RECT_STYLE)) {
+        if (preferencesStyle == null || (!preferencesStyle.equals(CIRCLE_STYLE) && !preferencesStyle.equals(RECT_STYLE))) {
             preferencesStyle = CIRCLE_STYLE;
             Log.e(TAG, "This setting will be not working. Preferences Style can be either rect or circle. It will be default(circle)");
         }
@@ -100,30 +101,30 @@ public class SimplePagerIndicator extends View implements PagerIndicator, ViewPa
 
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-        int widthMode = MeasureSpec.getMode(widthMeasureSpec);
-        int heightMode = MeasureSpec.getMode(heightMeasureSpec);
         int widthSize = MeasureSpec.getSize(widthMeasureSpec);
+        int heightMode = MeasureSpec.getMode(heightMeasureSpec);
         int heightSize;
 
         if (heightMode == MeasureSpec.EXACTLY) {
-            Log.w(TAG, "This setting of Height will be not working, \"wrap_content\" is recommended.");
-        }
-
-        if (preferencesStyle.equals(RECT_STYLE)) {
-            if (rectWidth < 0) {
-                rectWidth = -rectWidth;
-            }
-            if (rectHeight < 0) {
-                rectHeight = -rectHeight;
-            }
-
-            heightSize = (int) (2 * rectHeight);
+            Log.w(TAG, "\"wrap_content\" is recommended.");
+            heightSize = MeasureSpec.getSize(heightMeasureSpec);
         } else {
-            if (circleRadius < 0) {
-                circleRadius = -circleRadius;
-            }
+            if (preferencesStyle.equals(RECT_STYLE)) {
+                if (rectWidth < 0) {
+                    rectWidth = -rectWidth;
+                }
+                if (rectHeight < 0) {
+                    rectHeight = -rectHeight;
+                }
 
-            heightSize = (int) (2 * circleRadius);
+                heightSize = (int) (2 * rectHeight);
+            } else {
+                if (circleRadius < 0) {
+                    circleRadius = -circleRadius;
+                }
+
+                heightSize = (int) (4 * circleRadius);
+            }
         }
 
         setMeasuredDimension(widthSize, heightSize);
@@ -133,45 +134,58 @@ public class SimplePagerIndicator extends View implements PagerIndicator, ViewPa
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
 
+        if (drawer != null) {
+            drawer.draw(canvas, paint, getWidth(), getHeight(), currentPosition, currentPositionOffset);
+            return;
+        }
+
         int indicatorCount = 0;
         if (mViewPager != null) {
-            indicatorCount = 3;
+            indicatorCount = mViewPager.getAdapter().getCount();
         }
 
         paint.setColor(normalColor);
 
         if (preferencesStyle.equals(RECT_STYLE)) {
             float totalWidth = rectWidth * indicatorCount + dividerSize * (indicatorCount - 1);
-            float paddingLeft;
-            float top = rectHeight / 2;
-            float bottom = top + rectHeight;
+            float paddingLeft = getPaddingLeft(totalWidth);
 
-            if (totalWidth > getWidth()) {
-                Log.e(TAG, "Width that you had set is smaller than actual width. This view will be show incompletely");
-                paddingLeft = 0f;
-            } else {
-                paddingLeft = (getWidth() - totalWidth) / 2;
-            }
+            float top = getPaddingTop(rectHeight);
+            float bottom = top + rectHeight;
 
             if (rect == null) {
                 rect = new Rect();
             }
 
-			for (int i = 0; i < indicatorCount; i++) {
-				float left = paddingLeft + dividerSize * i + rectWidth * i;
-				float right = left + rectWidth;
-				rect.set((int) left, (int) top, (int) right, (int) bottom);
-				canvas.drawRect(rect, paint);
-			}
+            for (int i = 0; i < indicatorCount; i++) {
+                float left = paddingLeft + dividerSize * i + rectWidth * i;
+                float right = left + rectWidth;
+                rect.set((int) left, (int) top, (int) right, (int) bottom);
+                canvas.drawRect(rect, paint);
+            }
 
-			paint.setColor(selectedColor);
-			float offset = (rectWidth + dividerSize) / ((View)getParent()).getWidth() * currentPositionOffset;
-			float left = paddingLeft + dividerSize * currentPosition + rectWidth * currentPosition + offset;
-			float right = left + rectWidth;
-			rect.set((int) left, (int) top, (int) right, (int) bottom);
-			canvas.drawRect(rect, paint);
+            paint.setColor(selectedColor);
+            float offset = (rectWidth + dividerSize) / ((View) getParent()).getWidth() * currentPositionOffset;
+            float left = paddingLeft + dividerSize * currentPosition + rectWidth * currentPosition + offset;
+            float right = left + rectWidth;
+            rect.set((int) left, (int) top, (int) right, (int) bottom);
+            canvas.drawRect(rect, paint);
         } else {
+            float totalWidth = circleRadius * 2 * indicatorCount + dividerSize * (indicatorCount - 1);
+            float paddingLeft = getPaddingLeft(totalWidth);
+            float top = getPaddingTop(circleRadius * 2);
+            float centerY = top + circleRadius;
 
+            for (int i = 0; i < indicatorCount; i++) {
+                float centerX = paddingLeft + dividerSize * i + circleRadius * 2 * i + circleRadius;
+
+                canvas.drawCircle(centerX, centerY, circleRadius, paint);
+            }
+
+            paint.setColor(selectedColor);
+            float offset = (circleRadius * 2 + dividerSize) / ((View) getParent()).getWidth() * currentPositionOffset;
+            float centerX = paddingLeft + dividerSize * currentPosition + circleRadius * 2 * currentPosition + offset + circleRadius;
+            canvas.drawCircle(centerX, centerY, circleRadius, paint);
         }
     }
 
@@ -212,5 +226,35 @@ public class SimplePagerIndicator extends View implements PagerIndicator, ViewPa
         if (onPageChangeListener != null) {
             onPageChangeListener.onPageScrollStateChanged(state);
         }
+    }
+
+    /**
+     * Custom drawing this view
+     * This interface is provided to make the view customizable
+     *
+     * @param drawer
+     */
+    public void setDrawer(SimplePagerIndicatorDrawer drawer) {
+        this.drawer = drawer;
+    }
+
+    public interface SimplePagerIndicatorDrawer {
+        void draw(Canvas canvas, Paint paint, int measureWidth, int measureHeight, int currentPosition, int currentPositionOffset);
+    }
+
+    private float getPaddingLeft(float totalWidth) {
+        if (totalWidth > getWidth()) {
+            Log.e(TAG, "Width that you had set is smaller than actual width. This view will be show incompletely");
+            return 0f;
+        }
+        return (getWidth() - totalWidth) / 2;
+    }
+
+    private float getPaddingTop(float totalHeight) {
+        if (totalHeight > getHeight()) {
+            Log.e(TAG, "Height that you had set is smaller than actual height. This view will be show incompletely");
+            return 0f;
+        }
+        return (getHeight() - totalHeight) / 2;
     }
 }

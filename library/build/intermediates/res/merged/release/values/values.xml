@@ -164,9 +164,9 @@
     <dimen name="activity_horizontal_margin">16dp</dimen>
     <dimen name="activity_vertical_margin">16dp</dimen>
     <dimen name="default_circle_divider">10dp</dimen>
-    <dimen name="default_circle_radius">-3dp</dimen>
-    <dimen name="default_rect_divider">2dp</dimen>
-    <dimen name="default_rect_height">-10dp</dimen>
+    <dimen name="default_circle_radius">-5dp</dimen>
+    <dimen name="default_rect_divider">5dp</dimen>
+    <dimen name="default_rect_height">-2dp</dimen>
     <dimen name="default_rect_width">-20dp</dimen>
     <!-- From: file:/C:/Users/dxinl/Desktop/DxlPagerIndicator/library/build/intermediates/exploded-aar/com.android.support/appcompat-v7/23.0.1/res/values/values.xml -->
     <eat-comment/>
