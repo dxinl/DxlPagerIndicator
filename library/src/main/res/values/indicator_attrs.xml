@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="SimplePagerIndicator">
+        <attr name="normal_color" format="color"/>
+        <attr name="selected_color" format="color"/>
+        <attr name="preferences_style" format="string"/>
+        <attr name="circle_radius" format="dimension"/>
+        <attr name="rect_width" format="dimension"/>
+        <attr name="rect_height" format="dimension"/>
+        <attr name="indicator_divider_size" format="dimension"/>
+    </declare-styleable>
+</resources>
