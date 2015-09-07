@@ -3,4 +3,10 @@
 
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
+
+    <!-- ActionBar setting of SimplePagerIndicator -->
+    <string name="set_normal_black">SINormalBlack</string>
+    <string name="set_normal_gray">SINormalGray</string>
+    <string name="set_selected_blue">SISelectedBlue</string>
+    <string name="set_selected_red">SISelectedRed</string>
 </resources>

@@ -3,9 +3,15 @@
     <dimen name="activity_horizontal_margin">16dp</dimen>
     <dimen name="activity_vertical_margin">16dp</dimen>
 
+    <!-- SimplePagerIndicator -->
     <dimen name="default_circle_radius">-5dp</dimen>
     <dimen name="default_rect_width">-20dp</dimen>
     <dimen name="default_rect_height">-2dp</dimen>
     <dimen name="default_rect_divider">5dp</dimen>
     <dimen name="default_circle_divider">10dp</dimen>
+
+    <!-- TabPagerIndicator -->
+    <dimen name="default_text_size">14sp</dimen>
+    <dimen name="default_under_rect_selected_height">5dp</dimen>
+    <dimen name="default_under_rect_normal_height">2dp</dimen>
 </resources>

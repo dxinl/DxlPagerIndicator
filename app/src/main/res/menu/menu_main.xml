@@ -1,6 +1,30 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools" tools:context=".MainActivity">
-    <item android:id="@+id/action_settings" android:title="@string/action_settings"
-        android:orderInCategory="100" app:showAsAction="never" />
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context=".MainActivity">
+    <item
+        android:id="@+id/action_settings"
+        android:orderInCategory="100"
+        android:title="@string/action_settings"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/normal_black"
+        android:title="@string/set_normal_black"
+        app:showAsAction="never"/>
+
+    <item
+        android:id="@+id/normal_gray"
+        android:title="@string/set_normal_gray"
+        app:showAsAction="never"/>
+
+    <item
+        android:id="@+id/selected_blue"
+        android:title="@string/set_selected_blue"
+        app:showAsAction="never"/>
+
+    <item
+        android:id="@+id/selected_red"
+        android:title="@string/set_selected_red"
+        app:showAsAction="never"/>
 </menu>

@@ -71,22 +71,15 @@ public class SimplePagerIndicator extends View implements PagerIndicator, ViewPa
         rectHeight = array.getDimension(R.styleable.SimplePagerIndicator_rect_height,
                 getResources().getDimension(R.dimen.default_rect_height));
         preferencesStyle = array.getString(R.styleable.SimplePagerIndicator_preferences_style);
-        dividerSize = array.getDimension(R.styleable.SimplePagerIndicator_indicator_divider_size,
-                preferencesStyle != null && preferencesStyle.equals(RECT_STYLE) ?
-                        getResources().getDimension(R.dimen.default_rect_divider) : getResources().getDimension(R.dimen.default_circle_divider));
+        dividerSize = array.getDimension(R.styleable.SimplePagerIndicator_indicator_divider_size, 0);
         array.recycle();
 
-        if (preferencesStyle == null || (!preferencesStyle.equals(CIRCLE_STYLE) && !preferencesStyle.equals(RECT_STYLE))) {
-            preferencesStyle = CIRCLE_STYLE;
-            Log.e(TAG, "This setting will be not working. Preferences Style can be either rect or circle. It will be default(circle)");
-        }
-
         if (circleRadius >= 0 && preferencesStyle.equals(RECT_STYLE)) {
-            Log.e(TAG, "This setting will be not working, \"circle_radius\" can only work when the preferences style is \"circle\".");
+            Log.d(TAG, "This setting will be not working, \"circle_radius\" can only work when the preferences style is \"circle\".");
         }
 
         if ((rectHeight >= 0 || rectWidth >= 0) && preferencesStyle.equals(CIRCLE_STYLE)) {
-            Log.e(TAG, "This setting will be not working, \"rect_height\" or \"rect_width\" can only be working when the preferences style is \"rect\".");
+            Log.d(TAG, "This setting will be not working, \"rect_height\" or \"rect_width\" can only be working when the preferences style is \"rect\".");
         }
 
         initData();
@@ -94,7 +87,7 @@ public class SimplePagerIndicator extends View implements PagerIndicator, ViewPa
 
     private void initData() {
         paint = new Paint(Paint.ANTI_ALIAS_FLAG);
-        if (preferencesStyle.equals(RECT_STYLE)) {
+        if (preferencesStyle != null && preferencesStyle.equals(RECT_STYLE)) {
             rect = new Rect();
         }
     }
@@ -138,6 +131,17 @@ public class SimplePagerIndicator extends View implements PagerIndicator, ViewPa
             drawer.draw(canvas, paint, getWidth(), getHeight(), currentPosition, currentPositionOffset);
             return;
         }
+
+        if (Utils.isBlank(preferencesStyle) || (!preferencesStyle.equals(CIRCLE_STYLE) && !preferencesStyle.equals(RECT_STYLE))) {
+            preferencesStyle = CIRCLE_STYLE;
+            Log.d(TAG, "Preferences Style can be either rect or circle. It will be default(circle)");
+        }
+        if (dividerSize == 0) {
+            dividerSize = preferencesStyle != null && preferencesStyle.equals(RECT_STYLE) ?
+                    getResources().getDimension(R.dimen.default_rect_divider) : getResources().getDimension(R.dimen.default_circle_divider);
+
+        }
+
 
         int indicatorCount = 0;
         if (mViewPager != null) {
@@ -197,8 +201,8 @@ public class SimplePagerIndicator extends View implements PagerIndicator, ViewPa
     }
 
     @Override
-    public void setOnPageChangeListener(ViewPager.OnPageChangeListener onPageChangeListener) {
-        this.onPageChangeListener = onPageChangeListener;
+    public void setOnPageChangeListener(ViewPager.OnPageChangeListener listener) {
+        onPageChangeListener = listener;
     }
 
     @Override
@@ -216,6 +220,7 @@ public class SimplePagerIndicator extends View implements PagerIndicator, ViewPa
     public void onPageSelected(int position) {
         currentPosition = position;
 
+        invalidate();
         if (onPageChangeListener != null) {
             onPageChangeListener.onPageSelected(position);
         }
@@ -226,6 +231,8 @@ public class SimplePagerIndicator extends View implements PagerIndicator, ViewPa
         if (onPageChangeListener != null) {
             onPageChangeListener.onPageScrollStateChanged(state);
         }
+
+        invalidate();
     }
 
     /**
@@ -244,7 +251,7 @@ public class SimplePagerIndicator extends View implements PagerIndicator, ViewPa
 
     private float getPaddingLeft(float totalWidth) {
         if (totalWidth > getWidth()) {
-            Log.e(TAG, "Width that you had set is smaller than actual width. This view will be show incompletely");
+            Log.d(TAG, "Width that you had set is smaller than actual width. This view will be show incompletely");
             return 0f;
         }
         return (getWidth() - totalWidth) / 2;
@@ -252,9 +259,19 @@ public class SimplePagerIndicator extends View implements PagerIndicator, ViewPa
 
     private float getPaddingTop(float totalHeight) {
         if (totalHeight > getHeight()) {
-            Log.e(TAG, "Height that you had set is smaller than actual height. This view will be show incompletely");
+            Log.d(TAG, "Height that you had set is smaller than actual height. This view will be show incompletely");
             return 0f;
         }
         return (getHeight() - totalHeight) / 2;
+    }
+
+    public void setNormalColor(int color) {
+        normalColor = color;
+        invalidate();
+    }
+
+    public void setSelectedColor(int color) {
+        selectedColor = color;
+        invalidate();
     }
 }

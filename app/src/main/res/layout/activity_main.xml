@@ -35,4 +35,9 @@
         android:layout_width="match_parent"
         android:layout_height="30dp"
         android:layout_above="@id/rect_indicator" />
+
+    <com.mx.dengxinliang.library.TabPagerIndicator
+        android:id="@+id/tab_indicator"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
 </RelativeLayout>

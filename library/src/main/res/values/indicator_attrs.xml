@@ -1,12 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <declare-styleable name="NormalPagerIndicator"></declare-styleable>
     <declare-styleable name="SimplePagerIndicator">
-        <attr name="normal_color" format="color"/>
-        <attr name="selected_color" format="color"/>
-        <attr name="preferences_style" format="string"/>
-        <attr name="circle_radius" format="dimension"/>
-        <attr name="rect_width" format="dimension"/>
-        <attr name="rect_height" format="dimension"/>
-        <attr name="indicator_divider_size" format="dimension"/>
+        <attr name="normal_color" format="color" />
+        <attr name="selected_color" format="color" />
+        <attr name="indicator_divider_size" format="dimension" />
+        <attr name="preferences_style" format="string" />
+        <attr name="circle_radius" format="dimension" />
+        <attr name="rect_width" format="dimension" />
+        <attr name="rect_height" format="dimension" />
+    </declare-styleable>
+
+    <declare-styleable name="TabPagerIndicator">
+        <attr name="bkg_color" format="color" />
+        <attr name="under_rect_color" format="color" />
+        <attr name="under_rect_selected_height" format="dimension" />
+        <attr name="under_rect_normal_height" format="dimension" />
+        <attr name="under_rect_normal_color" format="color" />
+        <attr name="under_rect_selected_color" format="color" />
     </declare-styleable>
 </resources>
