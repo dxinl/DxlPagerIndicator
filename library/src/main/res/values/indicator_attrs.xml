@@ -13,6 +13,7 @@
 
     <declare-styleable name="TabPagerIndicator">
         <attr name="bkg_color" format="color" />
+        <attr name="clicked_bkg_color" format="color"/>
         <attr name="under_rect_color" format="color" />
         <attr name="under_rect_selected_height" format="dimension" />
         <attr name="under_rect_normal_height" format="dimension" />

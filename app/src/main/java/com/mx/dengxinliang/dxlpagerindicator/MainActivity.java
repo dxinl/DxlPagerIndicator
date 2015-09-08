@@ -24,7 +24,6 @@ public class MainActivity extends AppCompatActivity implements SimplePagerIndica
     private String[] pageTitle = new String[]{"page1", "page2", "page3"};
 
     private SimplePagerIndicator rectIndicator;
-    private SimplePagerIndicator circleIndicator;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,7 +60,7 @@ public class MainActivity extends AppCompatActivity implements SimplePagerIndica
         rectIndicator = (SimplePagerIndicator) findViewById(R.id.rect_indicator);
         rectIndicator.setViewPager(viewPager);
 
-        circleIndicator = (SimplePagerIndicator) findViewById(R.id.circle_indicator);
+        SimplePagerIndicator circleIndicator = (SimplePagerIndicator) findViewById(R.id.circle_indicator);
         circleIndicator.setViewPager(viewPager);
 
         SimplePagerIndicator customDrawerIndicator = (SimplePagerIndicator) findViewById(R.id.test_custom_drawer_indicator);

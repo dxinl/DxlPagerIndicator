@@ -38,13 +38,19 @@ public class TabPagerIndicator extends View implements PagerIndicator, ViewPager
     private float underRectSelectedHeight;
 
     private int bkgColor;
+    private int clickedBkgColor;
     private int normalColor;
     private int selectedColor;
 
+    private int indicatorCount;
     private float itemWidth;
 
     private int currentPosition;
     private int currentPositionOffset;
+
+    private int[] location;
+    private int currentTouchedPosition;
+    private boolean isOutOfView;
 
     public TabPagerIndicator(Context context) {
         this(context, null);
@@ -89,6 +95,8 @@ public class TabPagerIndicator extends View implements PagerIndicator, ViewPager
     private void getAttrs(TypedArray array) {
         bkgColor = array.getColor(R.styleable.TabPagerIndicator_bkg_color,
                 getResources().getColor(android.R.color.white));
+        clickedBkgColor = array.getColor(R.styleable.TabPagerIndicator_clicked_bkg_color,
+                getResources().getColor(android.R.color.holo_orange_light));
         normalColor = array.getColor(R.styleable.TabPagerIndicator_under_rect_normal_color,
                 getResources().getColor(android.R.color.darker_gray));
         selectedColor = array.getColor(R.styleable.TabPagerIndicator_under_rect_selected_color,
@@ -97,15 +105,28 @@ public class TabPagerIndicator extends View implements PagerIndicator, ViewPager
                 getResources().getDimension(R.dimen.default_under_rect_normal_height));
         underRectSelectedHeight = array.getDimension(R.styleable.TabPagerIndicator_under_rect_selected_height,
                 getResources().getDimension(R.dimen.default_under_rect_selected_height));
-        Log.e(TAG, String.valueOf(underRectSelectedHeight));
+
         array.recycle();
 
         initData();
     }
 
     private void initData() {
+        location = new int[2];
+        getLocationOnScreen(location);
+        isOutOfView = false;
+        currentTouchedPosition = -1;
+
         paint = new Paint(Paint.ANTI_ALIAS_FLAG);
         rect = new Rect();
+    }
+
+    @Override
+    protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
+        super.onLayout(changed, left, top, right, bottom);
+        if (changed) {
+            getLocationOnScreen(location);
+        }
     }
 
     @Override
@@ -137,13 +158,20 @@ public class TabPagerIndicator extends View implements PagerIndicator, ViewPager
         rect.set(0, 0, getWidth(), getHeight());
         canvas.drawRect(rect, paint);
 
-        int indicatorCount = 0;
         if (mViewPager != null) {
             indicatorCount = mViewPager.getAdapter().getCount();
         }
 
         if (indicatorCount > 0) {
             itemWidth = getWidth() / indicatorCount;
+
+            if (currentTouchedPosition != -1) {
+                paint.setColor(clickedBkgColor);
+
+                rect.set((int) (currentTouchedPosition * itemWidth), 0,
+                        (int) ((currentTouchedPosition + 1) * itemWidth), getHeight());
+                canvas.drawRect(rect, paint);
+            }
 
             int totalHeight = (int) (textSize * 2 + underRectSelectedHeight);
             int textBottom;
@@ -181,11 +209,30 @@ public class TabPagerIndicator extends View implements PagerIndicator, ViewPager
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
+        float x = event.getRawX();
+        float y = event.getRawY();
         switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN:
-                break;
+                currentTouchedPosition = getItemTouched(x);
+                isOutOfView = false;
+                invalidate();
+                return true;
             case MotionEvent.ACTION_UP:
-                break;
+                if (!pointInView(x, y) && !isOutOfView) {
+                    mViewPager.setCurrentItem(currentTouchedPosition);
+                    currentTouchedPosition = -1;
+                    isOutOfView = false;
+                    invalidate();
+                }
+                return true;
+            case MotionEvent.ACTION_MOVE:
+                if (pointInView(x, y) || currentTouchedPosition != getItemTouched(x)) {
+                    Log.e(TAG, "out");
+                    isOutOfView = true;
+                    currentTouchedPosition = -1;
+                }
+                invalidate();
+                return true;
             default:
                 break;
         }
@@ -247,5 +294,19 @@ public class TabPagerIndicator extends View implements PagerIndicator, ViewPager
         int baseLine = destRect.top + (destRect.bottom - destRect.top - fontMetricsInt.bottom + fontMetricsInt.top) / 2 - fontMetricsInt.top;
         paint.setTextAlign(Paint.Align.CENTER);
         canvas.drawText(text, destRect.centerX(), baseLine, paint);
+    }
+
+    private boolean pointInView(float x, float y) {
+        return x > location[0] + getWidth() || x < location[0] || y > location[1] + getHeight() || y < location[1];
+    }
+
+    private int getItemTouched(float x) {
+        for (int i = 0; i < indicatorCount; i++) {
+            if (x > location[0] + itemWidth * i && x < location[0] + itemWidth * (i + 1)) {
+                return i;
+            }
+        }
+
+        return -1;
     }
 }
