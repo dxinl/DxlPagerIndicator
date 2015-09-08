@@ -154,10 +154,12 @@ public class TabPagerIndicator extends View implements PagerIndicator, ViewPager
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
 
+        // draw view background
         paint.setColor(bkgColor);
         rect.set(0, 0, getWidth(), getHeight());
         canvas.drawRect(rect, paint);
 
+        // calculate the count of pages
         if (mViewPager != null) {
             indicatorCount = mViewPager.getAdapter().getCount();
         }
@@ -165,6 +167,7 @@ public class TabPagerIndicator extends View implements PagerIndicator, ViewPager
         if (indicatorCount > 0) {
             itemWidth = getWidth() / indicatorCount;
 
+            // draw background of the item that you touched
             if (currentTouchedPosition != -1) {
                 paint.setColor(clickedBkgColor);
 
@@ -173,6 +176,7 @@ public class TabPagerIndicator extends View implements PagerIndicator, ViewPager
                 canvas.drawRect(rect, paint);
             }
 
+            // calculate the edges of the item
             int totalHeight = (int) (textSize * 2 + underRectSelectedHeight);
             int textBottom;
             if (totalHeight > getHeight()) {
@@ -182,6 +186,7 @@ public class TabPagerIndicator extends View implements PagerIndicator, ViewPager
                 textBottom = (int) (getHeight() - underRectSelectedHeight);
             }
 
+            // draw title and default under_rect
             for (int i = 0; i < indicatorCount; i++) {
                 float paddingLeft = itemWidth * i;
                 rect.set((int) paddingLeft, 0, (int) (itemWidth + paddingLeft), textBottom);
@@ -195,6 +200,7 @@ public class TabPagerIndicator extends View implements PagerIndicator, ViewPager
                 canvas.drawRect(rect, paint);
             }
 
+            // draw under_rect for the item that you selected
             paint.setColor(selectedColor);
             float offset = itemWidth / getWidth() * currentPositionOffset;
             int left = (int) (itemWidth * currentPosition + offset);
@@ -281,12 +287,12 @@ public class TabPagerIndicator extends View implements PagerIndicator, ViewPager
     }
 
     /**
-     * 绘制居中文字
+     * Draw text on the center of rect
      *
-     * @param canvas   画布
-     * @param paint    画笔
-     * @param text     文本
-     * @param destRect 目标方块
+     * @param canvas
+     * @param paint
+     * @param text
+     * @param destRect
      */
     public static void drawTextCenter(Canvas canvas, Paint paint, String text, Rect destRect) {
         Paint.FontMetricsInt fontMetricsInt = paint.getFontMetricsInt();
@@ -296,10 +302,23 @@ public class TabPagerIndicator extends View implements PagerIndicator, ViewPager
         canvas.drawText(text, destRect.centerX(), baseLine, paint);
     }
 
+    /**
+     * is the point that you touched on the view
+     *
+     * @param x
+     * @param y
+     * @return
+     */
     private boolean pointInView(float x, float y) {
         return x > location[0] + getWidth() || x < location[0] || y > location[1] + getHeight() || y < location[1];
     }
 
+    /**
+     * which item you toching
+     *
+     * @param x
+     * @return
+     */
     private int getItemTouched(float x) {
         for (int i = 0; i < indicatorCount; i++) {
             if (x > location[0] + itemWidth * i && x < location[0] + itemWidth * (i + 1)) {
@@ -308,5 +327,45 @@ public class TabPagerIndicator extends View implements PagerIndicator, ViewPager
         }
 
         return -1;
+    }
+
+    public void setUnderRectNormalHeight(int height) {
+        underRectNormalHeight = height;
+        invalidate();
+    }
+
+    public void setUnderRectSelectedHeight(int height) {
+        underRectSelectedHeight = height;
+        invalidate();
+    }
+
+    public void setTitleSize(int size) {
+        textSize = size;
+        invalidate();
+    }
+
+    public void setTitleColor(int color) {
+        textColor = color;
+        invalidate();
+    }
+
+    public void setBkgColor(int color) {
+        bkgColor = color;
+        invalidate();
+    }
+
+    public void setNormalColor(int color) {
+        normalColor = color;
+        invalidate();
+    }
+
+    public void setSelectedColor(int color) {
+        selectedColor = color;
+        invalidate();
+    }
+
+    public void setClickedBkgColor(int color) {
+        clickedBkgColor = color;
+        invalidate();
     }
 }
