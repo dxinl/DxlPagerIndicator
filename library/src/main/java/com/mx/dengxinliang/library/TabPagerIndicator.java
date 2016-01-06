@@ -200,7 +200,7 @@ public class TabPagerIndicator extends View implements PagerIndicator, ViewPager
                 canvas.drawRect(rect, paint);
             }
 
-            // draw under_rect for the item that you selected
+            // draw under_rect for the item that was selected
             paint.setColor(selectedColor);
             float offset = itemWidth / getWidth() * currentPositionOffset;
             int left = (int) (itemWidth * currentPosition + offset);

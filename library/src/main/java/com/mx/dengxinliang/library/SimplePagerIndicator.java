@@ -102,7 +102,7 @@ public class SimplePagerIndicator extends View implements PagerIndicator, ViewPa
             Log.w(TAG, "\"wrap_content\" is recommended.");
             heightSize = MeasureSpec.getSize(heightMeasureSpec);
         } else {
-            if (preferencesStyle.equals(RECT_STYLE)) {
+            if (preferencesStyle != null && preferencesStyle.equals(RECT_STYLE)) {
                 if (rectWidth < 0) {
                     rectWidth = -rectWidth;
                 }
