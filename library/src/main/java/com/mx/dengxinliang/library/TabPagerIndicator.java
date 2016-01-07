@@ -29,8 +29,6 @@ public class TabPagerIndicator extends View implements PagerIndicator, ViewPager
     private Paint paint;
     private Rect rect;
 
-    private String[] titles;
-
     private int textColor;
     private float textSize;
 
@@ -45,6 +43,7 @@ public class TabPagerIndicator extends View implements PagerIndicator, ViewPager
     private int indicatorCount;
     private float itemWidth;
 
+    private int prePosition;
     private int currentPosition;
     private int currentPositionOffset;
 
@@ -200,17 +199,24 @@ public class TabPagerIndicator extends View implements PagerIndicator, ViewPager
                 canvas.drawRect(rect, paint);
             }
 
-            // draw under_rect for the item that was selected
+            // draw under_rect for the item that you selected
+            int position;
             paint.setColor(selectedColor);
             float offset = itemWidth / getWidth() * currentPositionOffset;
-            int left = (int) (itemWidth * currentPosition + offset);
-            int right = (int) (itemWidth * (currentPosition + 1) + offset);
+            if (prePosition != currentPosition) {
+                position = prePosition;
+                prePosition = currentPosition;
+            } else {
+                position = currentPosition;
+            }
+            int left = (int) (itemWidth * position + offset);
+            int right = (int) (itemWidth * (position + 1) + offset);
             int top = (int) (getHeight() - underRectSelectedHeight);
             int bottom = getHeight();
             rect.set(left, top, right, bottom);
             canvas.drawRect(rect, paint);
+            System.out.println(left);
         }
-
     }
 
     @Override
@@ -259,7 +265,7 @@ public class TabPagerIndicator extends View implements PagerIndicator, ViewPager
 
     @Override
     public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-        currentPosition = position;
+        prePosition = currentPosition = position;
         currentPositionOffset = positionOffsetPixels;
 
         invalidate();
