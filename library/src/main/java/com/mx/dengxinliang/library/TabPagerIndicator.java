@@ -121,6 +121,12 @@ public class TabPagerIndicator extends View implements PagerIndicator, ViewPager
     }
 
     @Override
+    public void onWindowFocusChanged(boolean hasWindowFocus) {
+        super.onWindowFocusChanged(hasWindowFocus);
+        getLocationOnScreen(location);
+    }
+
+    @Override
     protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
         super.onLayout(changed, left, top, right, bottom);
         if (changed) {
@@ -230,7 +236,7 @@ public class TabPagerIndicator extends View implements PagerIndicator, ViewPager
                 invalidate();
                 return true;
             case MotionEvent.ACTION_UP:
-                if (!pointInView(x, y) && !isOutOfView) {
+                if (!isOutOfView) {
                     mViewPager.setCurrentItem(currentTouchedPosition);
                     currentTouchedPosition = -1;
                     isOutOfView = false;
@@ -238,7 +244,7 @@ public class TabPagerIndicator extends View implements PagerIndicator, ViewPager
                 }
                 return true;
             case MotionEvent.ACTION_MOVE:
-                if (pointInView(x, y) || currentTouchedPosition != getItemTouched(x)) {
+                if (currentTouchedPosition != getItemTouched(x)) {
                     Log.e(TAG, "out");
                     isOutOfView = true;
                     currentTouchedPosition = -1;
@@ -306,17 +312,6 @@ public class TabPagerIndicator extends View implements PagerIndicator, ViewPager
         int baseLine = destRect.top + (destRect.bottom - destRect.top - fontMetricsInt.bottom + fontMetricsInt.top) / 2 - fontMetricsInt.top;
         paint.setTextAlign(Paint.Align.CENTER);
         canvas.drawText(text, destRect.centerX(), baseLine, paint);
-    }
-
-    /**
-     * is the point that you touched on the view
-     *
-     * @param x
-     * @param y
-     * @return
-     */
-    private boolean pointInView(float x, float y) {
-        return x > location[0] + getWidth() || x < location[0] || y > location[1] + getHeight() || y < location[1];
     }
 
     /**
