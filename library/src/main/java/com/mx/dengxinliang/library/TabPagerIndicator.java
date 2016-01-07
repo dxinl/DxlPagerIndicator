@@ -61,34 +61,15 @@ public class TabPagerIndicator extends View implements PagerIndicator, ViewPager
 
     public TabPagerIndicator(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-        TypedArray array = context.obtainStyledAttributes(attrs, ATTRS);
-        getSystemAttrs(array);
-
-        array = context.obtainStyledAttributes(attrs, R.styleable.TabPagerIndicator);
+        TypedArray array = context.obtainStyledAttributes(attrs, R.styleable.TabPagerIndicator);
         getAttrs(array);
     }
 
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     public TabPagerIndicator(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
-        TypedArray array = context.obtainStyledAttributes(attrs, ATTRS);
-        getSystemAttrs(array);
-
-        array = context.obtainStyledAttributes(attrs, R.styleable.TabPagerIndicator);
+        TypedArray array = context.obtainStyledAttributes(attrs, R.styleable.TabPagerIndicator);
         getAttrs(array);
-    }
-
-    /**
-     * get android system attributes: android:textColor & android:textSize
-     *
-     * @param array
-     */
-    private void getSystemAttrs(TypedArray array) {
-        textColor = array.getColor(1,
-                getResources().getColor(android.R.color.darker_gray));
-        textSize = array.getDimension(0,
-                getResources().getDimension(R.dimen.default_text_size));
-        array.recycle();
     }
 
     private void getAttrs(TypedArray array) {
@@ -98,7 +79,11 @@ public class TabPagerIndicator extends View implements PagerIndicator, ViewPager
                 getResources().getColor(android.R.color.holo_orange_light));
         normalColor = array.getColor(R.styleable.TabPagerIndicator_under_rect_normal_color,
                 getResources().getColor(android.R.color.darker_gray));
-        selectedColor = array.getColor(R.styleable.TabPagerIndicator_under_rect_selected_color,
+	    textColor = array.getColor(R.styleable.TabPagerIndicator_text_color,
+			    getResources().getColor(android.R.color.darker_gray));
+	    textSize = array.getDimension(R.styleable.TabPagerIndicator_text_size,
+			    getResources().getDimension(R.dimen.default_text_size));
+	    selectedColor = array.getColor(R.styleable.TabPagerIndicator_under_rect_selected_color,
                 getResources().getColor(android.R.color.holo_red_light));
         underRectNormalHeight = array.getDimension(R.styleable.TabPagerIndicator_under_rect_normal_height,
                 getResources().getDimension(R.dimen.default_under_rect_normal_height));
